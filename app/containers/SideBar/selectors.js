@@ -10,6 +10,17 @@ const selectSideBarDomain = state => state.sideBar || initialState;
 /**
  * Other specific selectors
  */
+const makeSelectSideBarSelectedMenu = () =>
+  createSelector(
+    selectSideBarDomain,
+    substate => substate.selectedMenu,
+  );
+
+const makeSelectSideBarMenus = () =>
+  createSelector(
+    selectSideBarDomain,
+    substate => substate.sideBarMenus,
+  );
 
 /**
  * Default selector used by SideBar
@@ -22,4 +33,8 @@ const makeSelectSideBar = () =>
   );
 
 export default makeSelectSideBar;
-export { selectSideBarDomain };
+export {
+  selectSideBarDomain,
+  makeSelectSideBarSelectedMenu,
+  makeSelectSideBarMenus,
+};

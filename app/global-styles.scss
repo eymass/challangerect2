@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
 html
 { font-family: 'Open Sans'; }
 
@@ -56,6 +57,11 @@ ul:focus {
 .backgroundImage {
   background-image: url('images/Login/pattern.jpg');
   background-size: contain;
+  background-repeat: repeat;
+}
+
+.sideBarBackground {
+  background-image: url('images/sidebar.png');
   background-repeat: repeat;
 }
 

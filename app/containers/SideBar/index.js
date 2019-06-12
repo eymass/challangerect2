@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 /**
  *
  * SideBar
@@ -9,13 +10,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
+import classNames from 'classnames';
 import Drawer from '@material-ui/core/Drawer';
 import withStyles from '@material-ui/core/styles/withStyles';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import List from '@material-ui/core/es/List/List';
 import { useInjectReducer } from 'utils/injectReducer';
 import { useInjectSaga } from 'utils/injectSaga';
-import makeSelectSideBar from './selectors';
+import {
+  makeSelectSideBarMenus,
+  makeSelectSideBarSelectedMenu,
+} from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import styles from './styles';
@@ -23,7 +28,7 @@ import DrawerRow from './DrawerRow';
 
 const key = 'sideBar';
 /* eslint-disable react/prefer-stateless-function */
-export function SideBar({ sideBar, classes, dispatch }) {
+export function SideBar({ sideBarMenus, classes, dispatch, selectedMenu }) {
   useInjectReducer({ key, reducer });
   useInjectSaga({ key, saga });
 
@@ -41,8 +46,19 @@ export function SideBar({ sideBar, classes, dispatch }) {
         rows.push(
           <DrawerRow
             classes={classes}
+            isOpen={isOpen}
+            key={row.id}
+            dispatch={dispatch}
             row={row}
-            className={classes.drawerRow}
+            iconClass={
+              row.id === selectedMenu ? classes.iconSelected : classes.icon
+            }
+            rowTextClass={classes.rowText}
+            rowClass={
+              row.id === selectedMenu
+                ? classes.drawerSelectedRow
+                : classes.drawerRow
+            }
           />,
         ),
       );
@@ -56,12 +72,22 @@ export function SideBar({ sideBar, classes, dispatch }) {
         <Drawer
           variant="permanent"
           open={isOpen}
-          className={isOpen ? classes.drawerOpen : classes.drawerClosed}
+          className={
+            isOpen
+              ? classNames(classes.drawerOpen, 'sideBarBackground')
+              : classNames(classes.drawerClosed, 'sideBarBackground')
+          }
           classes={{
-            paper: isOpen ? classes.drawerOpen : classes.drawerClosed,
+            paper: isOpen
+              ? classNames(classes.drawerOpen, 'sideBarBackground')
+              : classNames(classes.drawerClosed, 'sideBarBackground'),
           }}
         >
-          <div className={classes.buttonRoot}>
+          <div className={classes.logoRoot}>
+            <img
+              className={isOpen ? classes.logoLogin : classes.logoLoginNone}
+              src={require('images/logo.png')}
+            />
             <div className={classes.toggleButton} onClick={toggleDrawer}>
               <ArrowBack
                 style={{ color: '#fff' }}
@@ -69,7 +95,7 @@ export function SideBar({ sideBar, classes, dispatch }) {
               />
             </div>
           </div>
-          <List>{getMenuButtons(sideBar.sideBarButtons)}</List>
+          <List>{getMenuButtons(sideBarMenus)}</List>
         </Drawer>
       </div>
     </Fragment>
@@ -79,11 +105,13 @@ export function SideBar({ sideBar, classes, dispatch }) {
 SideBar.propTypes = {
   dispatch: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
-  sideBar: PropTypes.object.isRequired,
+  sideBarMenus: PropTypes.array.isRequired,
+  selectedMenu: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
-  sideBar: makeSelectSideBar(),
+  sideBarMenus: makeSelectSideBarMenus(),
+  selectedMenu: makeSelectSideBarSelectedMenu(),
 });
 
 function mapDispatchToProps(dispatch) {
