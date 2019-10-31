@@ -75,7 +75,7 @@
     "invariant": "2.2.4",
     "ip": "1.1.5",
     "js-cookie": "^2.2.0",
-    "lodash": "4.17.11",
+    "lodash": "4.17.13",
     "material-icons": "^0.3.1",
     "minimist": "1.2.0",
     "node-sass": "^4.12.0",
